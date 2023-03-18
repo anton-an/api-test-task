@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { RootState } from '../../store/store';
 import { AnyAction } from '@reduxjs/toolkit';
-import { Box, CircularProgress } from '@mui/material';
+import { Alert, Box, CircularProgress } from '@mui/material';
 import { Edit, Delete, Save, Cancel } from '@mui/icons-material';
 import {
   GridRowModesModel,
@@ -26,6 +26,7 @@ import {
   createUser,
   selectUsersDeleteStatus,
   selectUsersUpdateStatus,
+  selectUsersError,
 } from '../../reducers/usersSlice';
 import { NewUser, User } from '../../types/usersTypes';
 import NewUserForm from '../NewUserForm/NewUserForm';
@@ -36,7 +37,9 @@ export default function UsersTable() {
   const fetchStatus = useSelector(selectUsersFetchStatus);
   const deleteStatus = useSelector(selectUsersDeleteStatus);
   const updateStatus = useSelector(selectUsersUpdateStatus);
+  const error = useSelector(selectUsersError);
   const isLoading = fetchStatus === 'loading';
+  const isError = fetchStatus === 'failed';
   const isDeleteLoading = deleteStatus === 'loading';
   const isUpdateLoading = updateStatus === 'loading';
 
@@ -211,25 +214,29 @@ export default function UsersTable() {
         },
       }}
     >
-      <DataGrid
-        rows={usersData}
-        columns={columns}
-        initialState={{
-          pagination: { paginationModel: { pageSize: 10 } },
-        }}
-        editMode="row"
-        rowModesModel={rowModesModel}
-        onRowModesModelChange={handleRowModesModelChange}
-        onRowEditStart={handleRowEditStart}
-        onRowEditStop={handleRowEditStop}
-        processRowUpdate={processRowUpdate}
-        pageSizeOptions={[10]}
-        loading={isLoading}
-        slots={{ toolbar: NewUserForm }}
-        slotProps={{
-          toolbar: { onNewUserSubmit },
-        }}
-      />
+      {isError ? (
+        <Alert severity="error">{error}</Alert>
+      ) : (
+        <DataGrid
+          rows={usersData}
+          columns={columns}
+          initialState={{
+            pagination: { paginationModel: { pageSize: 10 } },
+          }}
+          editMode="row"
+          rowModesModel={rowModesModel}
+          onRowModesModelChange={handleRowModesModelChange}
+          onRowEditStart={handleRowEditStart}
+          onRowEditStop={handleRowEditStop}
+          processRowUpdate={processRowUpdate}
+          pageSizeOptions={[10]}
+          loading={isLoading}
+          slots={{ toolbar: NewUserForm }}
+          slotProps={{
+            toolbar: { onNewUserSubmit },
+          }}
+        />
+      )}
     </Box>
   );
 }

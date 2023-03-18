@@ -7,12 +7,16 @@ import {
   CircularProgress,
   Typography,
   Snackbar,
+  Alert,
 } from '@mui/material';
 import { Add, Check } from '@mui/icons-material';
 import styled from '@emotion/styled';
 import { NewUser } from '../../types/usersTypes';
 import { useSelector } from 'react-redux';
-import { selectUsersCreateStatus } from '../../reducers/usersSlice';
+import {
+  selectUsersCreateStatus,
+  selectUsersError,
+} from '../../reducers/usersSlice';
 
 const StyledForm = styled('form')({
   display: 'flex',
@@ -59,8 +63,10 @@ const NewUserForm: React.FC<NewUserFormProps> = ({ onNewUserSubmit }) => {
   const [showMessage, setShowMessage] = useState(false);
 
   const status = useSelector(selectUsersCreateStatus);
+  const error = useSelector(selectUsersError);
   const isLoading = status === 'loading';
   const isSuccess = status === 'success';
+  const isError = status === 'failed';
 
   useEffect(() => {
     if (isSuccess) {
@@ -162,6 +168,7 @@ const NewUserForm: React.FC<NewUserFormProps> = ({ onNewUserSubmit }) => {
           </Button>
         )}
       </StyledForm>
+      {isError ? <Alert severity="error">{error}</Alert> : null}
       <Snackbar open={showMessage} message="New user uccessfully added!" />
     </>
   );
