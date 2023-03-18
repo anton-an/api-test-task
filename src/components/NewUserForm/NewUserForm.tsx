@@ -9,7 +9,7 @@ import {
   Snackbar,
   Alert,
 } from '@mui/material';
-import { Add, Check } from '@mui/icons-material';
+import { Add } from '@mui/icons-material';
 import styled from '@emotion/styled';
 import { NewUser } from '../../types/usersTypes';
 import { useSelector } from 'react-redux';
