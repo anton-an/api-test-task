@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   TextField,
   FormControlLabel,
@@ -6,8 +6,9 @@ import {
   Button,
   CircularProgress,
   Typography,
+  Snackbar,
 } from '@mui/material';
-import { Add } from '@mui/icons-material';
+import { Add, Check } from '@mui/icons-material';
 import styled from '@emotion/styled';
 import { NewUser } from '../../types/usersTypes';
 import { useSelector } from 'react-redux';
@@ -55,9 +56,18 @@ const NewUserForm: React.FC<NewUserFormProps> = ({ onNewUserSubmit }) => {
     access: false,
     birthDate: '',
   });
+  const [showMessage, setShowMessage] = useState(false);
 
   const status = useSelector(selectUsersCreateStatus);
   const isLoading = status === 'loading';
+  const isSuccess = status === 'success';
+
+  useEffect(() => {
+    if (isSuccess) {
+      setShowMessage((state) => (state = true));
+      setTimeout(() => setShowMessage((state) => (state = false)), 3000);
+    }
+  }, [isSuccess]);
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setFormData((prevFormData) => ({
@@ -89,68 +99,71 @@ const NewUserForm: React.FC<NewUserFormProps> = ({ onNewUserSubmit }) => {
   };
 
   return (
-    <StyledForm onSubmit={handleSubmit}>
-      <StyledTextField
-        required
-        id="name"
-        label="Name"
-        value={formData.name}
-        onChange={handleInputChange}
-        size="small"
-      />
-      <StyledTextField
-        required
-        id="email"
-        label="Email"
-        type="email"
-        value={formData.email}
-        onChange={handleInputChange}
-        size="small"
-      />
-      <StyledTextField
-        required
-        id="lastName"
-        label="Last Name"
-        value={formData.lastName}
-        onChange={handleInputChange}
-        size="small"
-      />
-      <StyledTextField
-        id="birthDate"
-        label="Birth Date"
-        type="date"
-        value={formData.birthDate}
-        onChange={handleInputChange}
-        InputLabelProps={{
-          shrink: true,
-        }}
-        size="small"
-      />
-      <FormControlLabel
-        control={
-          <StyledCheckbox
-            id="access"
-            checked={formData.access}
-            onChange={handleInputChange}
-            name="access"
+    <>
+      <StyledForm onSubmit={handleSubmit}>
+        <StyledTextField
+          required
+          id="name"
+          label="Name"
+          value={formData.name}
+          onChange={handleInputChange}
+          size="small"
+        />
+        <StyledTextField
+          required
+          id="email"
+          label="Email"
+          type="email"
+          value={formData.email}
+          onChange={handleInputChange}
+          size="small"
+        />
+        <StyledTextField
+          required
+          id="lastName"
+          label="Last Name"
+          value={formData.lastName}
+          onChange={handleInputChange}
+          size="small"
+        />
+        <StyledTextField
+          id="birthDate"
+          label="Birth Date"
+          type="date"
+          value={formData.birthDate}
+          onChange={handleInputChange}
+          InputLabelProps={{
+            shrink: true,
+          }}
+          size="small"
+        />
+        <FormControlLabel
+          control={
+            <StyledCheckbox
+              id="access"
+              checked={formData.access}
+              onChange={handleInputChange}
+              name="access"
+              color="primary"
+            />
+          }
+          label="Access"
+        />
+        {isLoading ? (
+          <CircularProgress variant="indeterminate" />
+        ) : (
+          <Button
+            type="submit"
+            variant="contained"
             color="primary"
-          />
-        }
-        label="Access"
-      />
-      {isLoading ? (
-        <CircularProgress variant="indeterminate" />
-      ) : (
-        <Button
-          type="submit"
-          variant="contained"
-          color="primary"
-          startIcon={<Add />}
-        >
-          <Typography variant="button">Add User</Typography>
-        </Button>
-      )}
-    </StyledForm>
+            startIcon={<Add />}
+          >
+            <Typography variant="button">Add User</Typography>
+          </Button>
+        )}
+      </StyledForm>
+      <Snackbar open={showMessage} message="New user uccessfully added!" />
+    </>
   );
 };
 
