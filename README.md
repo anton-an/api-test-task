@@ -8,7 +8,16 @@
 ### Скрипт для запуска приложения
 
 1. Открыть любой текстовый редактор
-2. Написать в нём следущий [скрипт](https://gist.github.com/anton-an/88ac8fd196e7f55425b3bf1ec03e0a01)
-3. Сохранить файл с расширением `.sh`
+2. Написать в нём следущий скрипт:
 
-Cсылка на демо: https://users-table-nine.vercel.app/
+```
+#!/bin/bash
+sudo apt update && sudo apt upgrade
+sudo apt install git nodejs npm
+git clone https://github.com/anton-an/api-test-task.git
+cd api-test-task
+npm install
+npm start
+```
+
+3. Сохранить файл с расширением `.sh`
